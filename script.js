@@ -2,14 +2,14 @@
 const SUPABASE_URL = 'https://whxlgangulxkmrrzoygu.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndoeGxnYW5ndWx4a21ycnpveWd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3MDU3MDcsImV4cCI6MjA3NjI4MTcwN30.j5mnEJN9If4QbB_okYEvWMzH_faQWgWg7B1MlqpuJrI';
 
-// Inicializar Supabase (comentado para demonstração - descomentar após configurar)
-// const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Inicializar Supabase
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Elementos do DOM
 const tabButtons = document.querySelectorAll('.tab-button');
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
-const toastContainer = document.getElementById('toasdescomentart-container');
+const toastContainer = document.getElementById('toast-container');
 
 // Sistema de Toast Notifications
 function showToast(type, title, message) {
@@ -111,11 +111,6 @@ loginForm.addEventListener('submit', async (e) => {
     setButtonLoading(submitBtn, true);
     
     try {
-        // Simulação de login (remover quando integrar com Supabase)
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // Quando integrar com Supabase, descomentar:
-        /*
         const { data, error } = await supabase.auth.signInWithPassword({
             email: email,
             password: password,
@@ -129,7 +124,6 @@ loginForm.addEventListener('submit', async (e) => {
         if (rememberMe) {
             localStorage.setItem('auth_remember', 'true');
         }
-        */
         
         showToast('success', 'Login realizado!', 'Redirecionando para o painel...');
         
@@ -186,11 +180,6 @@ registerForm.addEventListener('submit', async (e) => {
     setButtonLoading(submitBtn, true);
     
     try {
-        // Simulação de cadastro (remover quando integrar com Supabase)
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Quando integrar com Supabase, descomentar:
-        /*
         const { data, error } = await supabase.auth.signUp({
             email: email,
             password: password,
@@ -219,7 +208,6 @@ registerForm.addEventListener('submit', async (e) => {
         if (profileError) {
             throw profileError;
         }
-        */
         
         showToast('success', 'Conta criada!', 'Verifique seu e-mail para confirmar o cadastro.');
         
@@ -243,8 +231,6 @@ registerForm.addEventListener('submit', async (e) => {
 // Login com Google
 document.querySelector('.btn-google').addEventListener('click', async () => {
     try {
-        // Quando integrar com Supabase, descomentar:
-        /*
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
@@ -255,9 +241,6 @@ document.querySelector('.btn-google').addEventListener('click', async () => {
         if (error) {
             throw error;
         }
-        */
-        
-        showToast('info', 'Google Login', 'Funcionalidade será habilitada após configurar o Supabase.');
         
     } catch (error) {
         console.error('Erro no login com Google:', error);
@@ -277,8 +260,6 @@ document.querySelector('.forgot-password').addEventListener('click', async (e) =
     }
     
     try {
-        // Quando integrar com Supabase, descomentar:
-        /*
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
             redirectTo: window.location.origin + '/reset-password.html',
         });
@@ -286,7 +267,6 @@ document.querySelector('.forgot-password').addEventListener('click', async (e) =
         if (error) {
             throw error;
         }
-        */
         
         showToast('success', 'E-mail enviado', 'Verifique sua caixa de entrada para redefinir sua senha.');
         
@@ -298,8 +278,6 @@ document.querySelector('.forgot-password').addEventListener('click', async (e) =
 
 // Verificar se usuário já está logado ao carregar a página
 window.addEventListener('DOMContentLoaded', async () => {
-    // Quando integrar com Supabase, descomentar:
-    /*
     const { data: { session } } = await supabase.auth.getSession();
     
     if (session) {
@@ -309,12 +287,9 @@ window.addEventListener('DOMContentLoaded', async () => {
             window.location.href = '../site-completo/index.html';
         }, 1000);
     }
-    */
 });
 
 // Monitorar mudanças na autenticação
-// Quando integrar com Supabase, descomentar:
-/*
 supabase.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_IN') {
         console.log('Usuário logado:', session.user);
@@ -322,7 +297,6 @@ supabase.auth.onAuthStateChange((event, session) => {
         console.log('Usuário deslogado');
     }
 });
-*/
 
 // Prevenir múltiplos submits
 [loginForm, registerForm].forEach(form => {
@@ -338,4 +312,3 @@ console.log('🍂 Página de Login Outono Dourado carregada!');
 console.log('📝 Para habilitar a integração com Supabase:');
 console.log('1. Configure SUPABASE_URL e SUPABASE_ANON_KEY');
 console.log('2. Descomente as linhas marcadas com "Quando integrar com Supabase"');
-
