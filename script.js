@@ -15,6 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Sistema de Toast Notifications
     function showToast(type, title, message) {
+        // Verificação de segurança: se toastContainer não existe, logar erro e sair
+        if (!toastContainer) {
+            console.error('Erro: toastContainer não encontrado no DOM. Verifique se <div id="toast-container"></div> existe no HTML.');
+            return;
+        }
+
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
         
