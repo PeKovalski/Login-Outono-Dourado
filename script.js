@@ -3,11 +3,23 @@ const SUPABASE_URL = 'https://whxlgangulxkmrrzoygu.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndoeGxnYW5ndWx4a21ycnpveWd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3MDU3MDcsImV4cCI6MjA3NjI4MTcwN30.j5mnEJN9If4QbB_okYEvWMzH_faQWgWg7B1MlqpuJrI';
 
 // Inicializar Supabase
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const { createClient } = Supabase; // Acesse createClient do namespace global
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Testar conexão com Supabase
+async function testSupabase() {
+    try {
+        const { data, error } = await supabase.from('usuarios').select('email').limit(1);
+        console.log('Teste de conexão com Supabase:', data, error);
+    } catch (err) {
+        console.error('Erro ao conectar com Supabase:', err);
+    }
+}
+testSupabase();
 
 // Aguardar o DOM carregar completamente antes de definir elementos
 document.addEventListener('DOMContentLoaded', () => {
-    // Elementos do DOM (agora dentro do DOMContentLoaded)
+    // Elementos do DOM
     const tabButtons = document.querySelectorAll('.tab-button');
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
@@ -141,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 1500);
             
         } catch (error) {
-            console.error('Erro no login:', error);
+            console.error('Erro no login:', error.message, error);
             showToast('error', 'Erro no login', error.message || 'Ocorreu um erro ao fazer login. Tente novamente.');
         } finally {
             setButtonLoading(submitBtn, false);
@@ -229,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 2000);
             
         } catch (error) {
-            console.error('Erro no cadastro:', error);
+            console.error('Erro no cadastro:', error.message, error);
             showToast('error', 'Erro no cadastro', error.message || 'Ocorreu um erro ao criar sua conta. Tente novamente.');
         } finally {
             setButtonLoading(submitBtn, false);
@@ -251,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
         } catch (error) {
-            console.error('Erro no login com Google:', error);
+            console.error('Erro no login com Google:', error.message, error);
             showToast('error', 'Erro', 'Não foi possível fazer login com Google.');
         }
     });
@@ -279,21 +291,25 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast('success', 'E-mail enviado', 'Verifique sua caixa de entrada para redefinir sua senha.');
             
         } catch (error) {
-            console.error('Erro ao recuperar senha:', error);
+            console.error('Erro ao recuperar senha:', error.message, error);
             showToast('error', 'Erro', 'Não foi possível enviar o e-mail de recuperação.');
         }
     });
 
     // Verificar se usuário já está logado ao carregar a página
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (session) {
-        // Usuário já está logado, redirecionar
-        showToast('info', 'Já autenticado', 'Redirecionando...');
-        setTimeout(() => {
-            window.location.href = '../site-completo/index.html';
-        }, 1000);
-    }
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+        if (error) {
+            console.error('Erro ao verificar sessão:', error);
+            return;
+        }
+        if (session) {
+            // Usuário já está logado, redirecionar
+            showToast('info', 'Já autenticado', 'Redirecionando...');
+            setTimeout(() => {
+                window.location.href = '../site-completo/index.html';
+            }, 1000);
+        }
+    });
 
     // Monitorar mudanças na autenticação
     supabase.auth.onAuthStateChange((event, session) => {
@@ -315,7 +331,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     console.log('🍂 Página de Login Outono Dourado carregada!');
-    console.log('📝 Para habilitar a integração com Supabase:');
-    console.log('1. Configure SUPABASE_URL e SUPABASE_ANON_KEY');
-    console.log('2. Descomente as linhas marcadas com "Quando integrar com Supabase"');
+    console.log('📝 Integração com Supabase habilitada');
 });
