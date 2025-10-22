@@ -1,1 +1,552 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-orange: #DF760B;
+    --primary-yellow: #F6B61E;
+    --white: #ffffff;
+    --text-dark: #2c2c2c;
+    --text-light: #666666;
+    --background-light: rgba(255, 255, 255, 0.95);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: linear-gradient(135deg, 
+        var(--primary-orange) 0%, 
+        var(--primary-yellow) 50%, 
+        var(--primary-orange) 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    position: relative;
+    overflow-x: hidden;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Background overlay com blur */
+.background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Folhas animadas de fundo */
+.leaf {
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0.3;
+    animation: fall linear infinite;
+    pointer-events: none;
+}
+
+.leaf-1 { left: 10%; animation-duration: 15s; animation-delay: 0s; }
+.leaf-2 { left: 30%; animation-duration: 18s; animation-delay: 2s; }
+.leaf-3 { left: 50%; animation-duration: 20s; animation-delay: 4s; }
+.leaf-4 { left: 70%; animation-duration: 16s; animation-delay: 1s; }
+.leaf-5 { left: 85%; animation-duration: 22s; animation-delay: 3s; }
+.leaf-6 { left: 25%; animation-duration: 19s; animation-delay: 5s; }
+
+@keyframes fall {
+    0% {
+        top: -10%;
+        transform: rotate(0deg) translateX(0);
+    }
+    50% {
+        transform: rotate(180deg) translateX(50px);
+    }
+    100% {
+        top: 110%;
+        transform: rotate(360deg) translateX(0);
+    }
+}
+
+/* Container principal */
+.login-container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header com logo */
+.login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.logo-icon {
+    font-size: 2.5rem;
+    animation: leafRotate 4s ease-in-out infinite;
+}
+
+@keyframes leafRotate {
+    0%, 100% { transform: rotate(-10deg); }
+    50% { transform: rotate(10deg); }
+}
+
+.logo h1 {
+    font-size: 2rem;
+    color: var(--white);
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 0.95rem;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Card de login */
+.login-card {
+    background: var(--background-light);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--border-radius);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 0.25rem;
+    border-radius: 8px;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--text-light);
+    transition: var(--transition);
+}
+
+.tab-button.active {
+    background: var(--white);
+    color: var(--primary-orange);
+    box-shadow: var(--shadow-sm);
+}
+
+.tab-button:hover:not(.active) {
+    color: var(--text-dark);
+}
+
+/* Formulários */
+.auth-form {
+    display: none;
+}
+
+.auth-form.active {
+    display: block;
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.auth-form h2 {
+    font-size: 1.75rem;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.form-description {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+    font-size: 0.9rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    background: var(--white);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 3px rgba(223, 118, 11, 0.1);
+}
+
+.form-group input::placeholder {
+    color: #999;
+}
+
+/* Opções do formulário */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: var(--text-dark);
+    font-size: 0.85rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary-orange);
+}
+
+.checkbox-label.terms {
+    margin-bottom: 1.5rem;
+}
+
+.checkbox-label.terms a {
+    color: var(--primary-orange);
+    text-decoration: none;
+}
+
+.checkbox-label.terms a:hover {
+    text-decoration: underline;
+}
+
+.forgot-password {
+    color: var(--primary-orange);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.forgot-password:hover {
+    color: var(--primary-yellow);
+}
+
+/* Botão de submit */
+.btn-submit {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--primary-orange), var(--primary-yellow));
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+.btn-submit.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.btn-submit.loading .btn-text {
+    opacity: 0;
+}
+
+.btn-submit.loading .btn-loader {
+    display: block;
+}
+
+.btn-loader {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--white);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Divider */
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    color: var(--text-light);
+    font-size: 0.85rem;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* Login social */
+.social-login {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-social {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--white);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.9rem;
+    color: var(--text-dark);
+}
+
+.btn-social:hover {
+    border-color: rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Link de voltar */
+.back-link {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.back-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.back-link a:hover {
+    gap: 0.75rem;
+}
+
+/* Toast notifications */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.toast {
+    background: var(--white);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 300px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.toast.success {
+    border-left: 4px solid #10b981;
+}
+
+.toast.error {
+    border-left: 4px solid #ef4444;
+}
+
+.toast.info {
+    border-left: 4px solid #3b82f6;
+}
+
+.toast-icon {
+    font-size: 1.25rem;
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    color: var(--text-dark);
+}
+
+.toast-message {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: var(--text-light);
+    padding: 0;
+    line-height: 1;
+    transition: var(--transition);
+}
+
+.toast-close:hover {
+    color: var(--text-dark);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .login-card {
+        padding: 1.5rem;
+    }
+
+    .logo h1 {
+        font-size: 1.5rem;
+    }
+
+    .auth-form h2 {
+        font-size: 1.5rem;
+    }
+
+    .social-login {
+        flex-direction: column;
+    }
+
+    #toast-container {
+        left: 10px;
+        right: 10px;
+        top: 10px;
+    }
+
+    .toast {
+        min-width: auto;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-card {
+        padding: 1.25rem;
+    }
+
+    .logo h1 {
+        font-size: 1.25rem;
+    }
+
+    .logo-icon {
+        font-size: 2rem;
+    }
+
+    .auth-form h2 {
+        font-size: 1.25rem;
+    }
+
+    .tabs {
+        font-size: 0.85rem;
+    }
+
+    .tab-button {
+        padding: 0.625rem 1rem;
+    }
+}
 
