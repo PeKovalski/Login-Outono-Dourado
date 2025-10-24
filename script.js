@@ -3,11 +3,7 @@ const SUPABASE_URL = 'https://whxlgangulxkmrrzoygu.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndoeGxnYW5ndWx4a21ycnpveWd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3MDU3MDcsImV4cCI6MjA3NjI4MTcwN30.j5mnEJN9If4QbB_okYEvWMzH_faQWgWg7B1MlqpuJrI';
 
 // Inicializar Supabase
-try {
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-} catch (error) {
-    console.error('Erro ao importar Supabase:', error.message);
-}
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Testar conexão com Supabase
@@ -17,7 +13,7 @@ async function testSupabase() {
         if (error) throw error;
         console.log('Conexão com Supabase OK:', data);
     } catch (err) {
-        console.error('Erro ao conectar com Supabase:', err.message);
+        console.error('Erro ao conectar com Supabase:', err.message, 'Código:', err.code);
     }
 }
 testSupabase();
@@ -98,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const confirmPassword = document.getElementById('register-confirm-password').value;
         const acceptTerms = document.getElementById('accept-terms').checked;
 
-        console.log('Dados do formulário:', { name, email, password, confirmPassword, acceptTerms });
+        console.log('Dados do formulário:', { name, email, passwordLength: password.length, confirmPasswordLength: confirmPassword.length, acceptTerms });
 
         if (name.length < 3) {
             console.log('Erro: Nome curto');
@@ -132,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .maybeSingle();
 
             if (checkError && checkError.code !== 'PGRST116') {
-                console.error('Erro ao verificar e-mail:', checkError.message, 'Código:', checkError.code);
+                console.error('Erro ao verificar e-mail:', checkError.message, 'Código:', checkError.code, 'Detalhes:', checkError.details);
                 throw new Error(`Erro ao verificar e-mail: ${checkError.message} (Código: ${checkError.code})`);
             }
             if (existing) {
@@ -148,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (authError) {
-                console.error('Erro no signUp:', authError.message, 'Código:', authError.code);
+                console.error('Erro no signUp:', authError.message, 'Código:', authError.code, 'Detalhes:', authError.details);
                 throw new Error(`Erro no signUp: ${authError.message} (Código: ${authError.code})`);
             }
             if (!authData.user) {
@@ -164,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .insert({ id: authData.user.id, email, nome: name, tipo: 'cliente' });
 
             if (insertError) {
-                console.error('Erro ao inserir na tabela usuarios:', insertError.message, 'Código:', insertError.code);
+                console.error('Erro ao inserir na tabela usuarios:', insertError.message, 'Código:', insertError.code, 'Detalhes:', insertError.details);
                 throw new Error(`Erro ao inserir na tabela usuarios: ${insertError.message} (Código: ${insertError.code})`);
             }
 
@@ -211,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = '../site-completo/index.html';
             }, 1500);
         } catch (error) {
-            console.error('Erro no login:', error.message);
+            console.error('Erro no login:', error.message, 'Código:', error.code, 'Detalhes:', error.details);
             showToast('error', 'Erro no login', error.message);
         } finally {
             setButtonLoading(submitBtn, false);
@@ -228,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         } catch (error) {
-            console.error('Erro no login com Google:', error.message);
+            console.error('Erro no login com Google:', error.message, 'Código:', error.code, 'Detalhes:', error.details);
             showToast('error', 'Erro', 'Falha no login com Google.');
         }
     });
@@ -251,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (error) throw error;
             showToast('success', 'E-mail enviado!', 'Verifique sua caixa de entrada.');
         } catch (error) {
-            console.error('Erro ao enviar e-mail de recuperação:', error.message);
+            console.error('Erro ao enviar e-mail de recuperação:', error.message, 'Código:', error.code, 'Detalhes:', error.details);
             showToast('error', 'Erro', error.message);
         }
     });
