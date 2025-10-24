@@ -1,10 +1,14 @@
 // Configuração do Supabase
-const SUPABASE_URL = 'https://whxlgangulxkmrrzoygu.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndoeGxnYW5ndWx4a21ycnpveWd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3MDU3MDcsImV4cCI6MjA3NjI4MTcwN30.j5mnEJN9If4QbB_okYEvWMzH_faQWgWg7B1MlqpuJrI';
+const SUPABASE_URL = 'https://zyenqzqtpjhkdezwqzkt.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5ZW5xenF0cGpoa2Rlendxemt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyNzAzNzAsImV4cCI6MjA3Njg0NjM3MH0.SlrvPXBh8KvN-z8hUHVBieP1DReDFXUIy9PCi8Wy9Kk';
 
 // Inicializar Supabase
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// IMPORTANTE: No painel do Supabase (Authentication > URL Configuration), adicione as seguintes Redirect URLs:
+// - http://localhost:3000/site-completo/index.html (ou sua URL de deploy, ex.: https://seu-site.vercel.app/site-completo/index.html)
+// - http://localhost:3000/reset-password.html (ou sua URL de deploy, ex.: https://seu-site.vercel.app/reset-password.html)
 
 // Testar conexão com Supabase
 async function testSupabase() {
@@ -204,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast('success', 'Sucesso!', 'Redirecionando...');
 
             setTimeout(() => {
-                window.location.href = '../site-completo/index.html';
+                window.location.href = `${window.location.origin}/site-completo/index.html`;
             }, 1500);
         } catch (error) {
             console.error('Erro no login:', error.message, 'Código:', error.code, 'Detalhes:', error.details);
