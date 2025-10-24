@@ -444,6 +444,17 @@ body {
     }
 }
 
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+
 .toast.success {
     border-left: 4px solid #10b981;
 }
@@ -549,4 +560,3 @@ body {
         padding: 0.625rem 1rem;
     }
 }
-
