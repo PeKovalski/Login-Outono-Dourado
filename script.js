@@ -3,7 +3,11 @@ const SUPABASE_URL = 'https://whxlgangulxkmrrzoygu.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndoeGxnYW5ndWx4a21ycnpveWd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3MDU3MDcsImV4cCI6MjA3NjI4MTcwN30.j5mnEJN9If4QbB_okYEvWMzH_faQWgWg7B1MlqpuJrI';
 
 // Inicializar Supabase
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+try {
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+} catch (error) {
+    console.error('Erro ao importar Supabase:', error.message);
+}
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Testar conexão com Supabase
@@ -20,18 +24,25 @@ testSupabase();
 
 // Aguardar o DOM
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM carregado');
+
     const tabButtons = document.querySelectorAll('.tab-button');
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
     const toastContainer = document.getElementById('toast-container');
 
-    // Sistema de Toast (substituindo emojis por texto para evitar erro de codificação)
+    // Verificar duplicação de background-overlay
+    const overlays = document.querySelectorAll('#background-overlay');
+    console.log('Número de background-overlays:', overlays.length); // Deve ser 1
+    const leaves = document.querySelectorAll('.leaf');
+    console.log('Número de folhas no background:', leaves.length); // Deve ser 6
+
+    // Sistema de Toast
     function showToast(type, title, message) {
         if (!toastContainer) {
             console.error('Erro: toastContainer não encontrado.');
             return;
         }
-
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
         const icons = { success: 'Sucesso', error: 'Erro', info: 'Info' };
@@ -78,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cadastro
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        console.log('Evento de submit do cadastro disparado'); // Log para depuração
+        console.log('Evento de submit do cadastro disparado');
 
         const submitBtn = registerForm.querySelector('.btn-submit');
         const name = document.getElementById('register-name').value.trim();
@@ -87,9 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const confirmPassword = document.getElementById('register-confirm-password').value;
         const acceptTerms = document.getElementById('accept-terms').checked;
 
-        console.log('Dados do formulário:', { name, email, password, confirmPassword, acceptTerms }); // Log dos valores
+        console.log('Dados do formulário:', { name, email, password, confirmPassword, acceptTerms });
 
-        // Validações
         if (name.length < 3) {
             console.log('Erro: Nome curto');
             return showToast('error', 'Erro', 'Nome deve ter pelo menos 3 caracteres.');
@@ -122,8 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 .maybeSingle();
 
             if (checkError && checkError.code !== 'PGRST116') {
-                console.error('Erro ao verificar e-mail:', checkError.message);
-                throw new Error('Erro ao verificar e-mail: ' + checkError.message);
+                console.error('Erro ao verificar e-mail:', checkError.message, 'Código:', checkError.code);
+                throw new Error(`Erro ao verificar e-mail: ${checkError.message} (Código: ${checkError.code})`);
             }
             if (existing) {
                 console.log('E-mail já cadastrado');
@@ -138,8 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (authError) {
-                console.error('Erro no signUp:', authError.message);
-                throw new Error(authError.message);
+                console.error('Erro no signUp:', authError.message, 'Código:', authError.code);
+                throw new Error(`Erro no signUp: ${authError.message} (Código: ${authError.code})`);
             }
             if (!authData.user) {
                 console.error('Usuário não criado:', authData);
@@ -154,8 +164,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 .insert({ id: authData.user.id, email, nome: name, tipo: 'cliente' });
 
             if (insertError) {
-                console.error('Erro ao inserir na tabela usuarios:', insertError.message);
-                throw new Error(insertError.message);
+                console.error('Erro ao inserir na tabela usuarios:', insertError.message, 'Código:', insertError.code);
+                throw new Error(`Erro ao inserir na tabela usuarios: ${insertError.message} (Código: ${insertError.code})`);
             }
 
             console.log('Usuário inserido na tabela usuarios');
@@ -175,9 +185,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Login com email/senha (mantido igual)
+    // Login com email/senha
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        console.log('Evento de submit do login disparado');
+
         const submitBtn = loginForm.querySelector('.btn-submit');
         const email = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-password').value;
@@ -199,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = '../site-completo/index.html';
             }, 1500);
         } catch (error) {
+            console.error('Erro no login:', error.message);
             showToast('error', 'Erro no login', error.message);
         } finally {
             setButtonLoading(submitBtn, false);
@@ -215,6 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         } catch (error) {
+            console.error('Erro no login com Google:', error.message);
             showToast('error', 'Erro', 'Falha no login com Google.');
         }
     });
@@ -222,6 +236,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Esqueceu a senha
     document.querySelector('.forgot-password').addEventListener('click', async (e) => {
         e.preventDefault();
+        console.log('Clique em Esqueceu a senha');
+
         const email = document.getElementById('login-email').value.trim();
 
         if (!isValidEmail(email)) {
@@ -235,6 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (error) throw error;
             showToast('success', 'E-mail enviado!', 'Verifique sua caixa de entrada.');
         } catch (error) {
+            console.error('Erro ao enviar e-mail de recuperação:', error.message);
             showToast('error', 'Erro', error.message);
         }
     });
