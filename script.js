@@ -17,7 +17,7 @@ async function testSupabase() {
         if (error) throw error;
         console.log('Conexão com Supabase OK:', data);
     } catch (err) {
-        console.error('Erro ao conectar com Supabase:', err.message, 'Código:', err.code);
+        console.error('Erro ao conectar com Supabase:', err.message, 'Código:', err.code, 'Detalhes:', err.details);
     }
 }
 testSupabase();
@@ -202,7 +202,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) throw error;
+            if (error) {
+                if (error.code === 'email_not_confirmed') {
+                    throw new Error('Por favor, confirme seu e-mail antes de fazer login. Verifique sua caixa de entrada ou spam.');
+                }
+                throw error;
+            }
 
             if (rememberMe) localStorage.setItem('auth_remember', 'true');
             showToast('success', 'Sucesso!', 'Redirecionando...');
@@ -212,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 1500);
         } catch (error) {
             console.error('Erro no login:', error.message, 'Código:', error.code, 'Detalhes:', error.details);
-            showToast('error', 'Erro no login', error.message);
+            showToast('error', 'Erro no login', error.message || 'Ocorreu um erro. Tente novamente.');
         } finally {
             setButtonLoading(submitBtn, false);
         }
@@ -252,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast('success', 'E-mail enviado!', 'Verifique sua caixa de entrada.');
         } catch (error) {
             console.error('Erro ao enviar e-mail de recuperação:', error.message, 'Código:', error.code, 'Detalhes:', error.details);
-            showToast('error', 'Erro', error.message);
+            showToast('error', 'Erro', error.message || 'Ocorreu um erro. Tente novamente.');
         }
     });
 });
